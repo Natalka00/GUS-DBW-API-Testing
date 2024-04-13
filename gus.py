@@ -7,8 +7,11 @@ def main():
 
     wyszukiwanie = input("Szukaj tematu: ").lower()
     wynik = wyszukiwarka(wyszukiwanie)
-    for _ in wynik:
-        print(_)
+    if len(wynik) < 1:
+        print("Nie znaleziono.")
+    else:
+        for count, item in enumerate(wynik):
+            print(f"{count + 1}. {item}")
     sys.exit()
 
 
