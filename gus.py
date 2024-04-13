@@ -5,6 +5,7 @@ import sys
 
 def main():
 
+    # Wyszukiwanie tematu
     wyszukiwanie = input("Szukaj tematu: ").lower()
     wynik = wyszukiwarka(wyszukiwanie)
     if len(wynik) < 1:
@@ -12,6 +13,18 @@ def main():
     else:
         for count, item in enumerate(wynik):
             print(f"{count + 1}. {item}")
+            
+    # Wybór tematu z listy wyników
+    wybor = input("Wybierz numer z listy: ")
+    while True:
+        try:
+            wybor = int(wybor)
+            if wybor in range(1, len(wynik) + 2):
+                print(wynik[wybor - 1])
+                break
+        except ValueError:
+            print("Nieprawidłowa wartość.")
+    
     sys.exit()
 
 
