@@ -24,27 +24,25 @@ def main():
             wybor = int(wybor)
             if wybor in range(1, len(wynik) + 2):
                 print(wynik[wybor - 1])
-                id_zmienna = (pobierz_id(wynik[wybor - 1]))
+                id_zpo = (pobierz_id(wynik[wybor - 1]))
                 break
         except ValueError:
             print("Nieprawidłowa wartość.")
             break
-            
-    print(id_zmienna)
-    sys.exit()
 
 
     try:
         rok = int(input("Podaj rok: "))
     except ValueError:
         sys.exit("Podaj czterocyfrową liczbę")
+            
+    zapytanie = requests.get(f"https://api-dbw.stat.gov.pl/api/1.1.0/variable/variable-data-section?id-zmienna={id_zpo[0]}&id-przekroj={id_zpo[1]}&id-rok={rok}&id-okres={id_zpo[2]}&ile-na-stronie=500&numer-strony=0&lang=pl")
 
-    # dane roczne id-okres: 282
-    id_okres = 282
-    id_zmienna = 1115
-    
-    zapytanie = requests.get(f"https://api-dbw.stat.gov.pl/api/1.1.0/variable/variable-data-section?id-zmienna={id_zmienna}&id-przekroj=933&id-rok={rok}&id-okres={id_okres}&ile-na-stronie=50&numer-strony=0&lang=pl")
-    
+    zapytanie = zapytanie.json()
+    print(json.dumps(zapytanie, indent=2))
+    sys.exit()
+
+
     
     
 # Wyszukiwarka zmiennych po stringach, pobiera nazwy z API, ale mogłaby też z pliku gus_zmienne.csv
@@ -68,11 +66,15 @@ def wyszukiwarka(string):
 
 
 def pobierz_id(nazwa):
+    ids = []
     with open("gus_zmienne.csv", "r", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             if row["nazwa-zmienna"] == nazwa:
-                return row["id-zmienna"]
+                ids.append(int(row["id-zmienna"]))
+                ids.append(int(row["id-przekroj"]))
+                ids.append(int(row["id-okres"]))
+                return ids
     
 
 if __name__ == "__main__":
