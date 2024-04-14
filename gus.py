@@ -1,9 +1,11 @@
+import csv
 import json
 import requests
 import sys
 
 
 def main():
+
 
     # Wyszukiwanie tematu
     wyszukiwanie = input("Szukaj tematu: ").lower()
@@ -14,17 +16,21 @@ def main():
         for count, item in enumerate(wynik):
             print(f"{count + 1}. {item}")
             
+
     # Wybór tematu z listy wyników
-    wybor = input("Wybierz numer z listy: ")
+    wybor = input("Wybierz numer z listy: ")    
     while True:
         try:
             wybor = int(wybor)
             if wybor in range(1, len(wynik) + 2):
                 print(wynik[wybor - 1])
+                id_zmienna = (pobierz_id(wynik[wybor - 1]))
                 break
         except ValueError:
             print("Nieprawidłowa wartość.")
-    
+            break
+            
+    print(id_zmienna)
     sys.exit()
 
 
@@ -41,7 +47,8 @@ def main():
     
     
     
-# Wyszukiwarka zmiennych po stringach
+# Wyszukiwarka zmiennych po stringach, pobiera nazwy z API, ale mogłaby też z pliku gus_zmienne.csv
+# Obecnie wyniki nie są sortowane, ale mogą być
 def wyszukiwarka(string):
     tematy = set()
     znalezione = []
@@ -58,6 +65,14 @@ def wyszukiwarka(string):
         if check != -1:
             znalezione.append(temat)
     return znalezione
+
+
+def pobierz_id(nazwa):
+    with open("gus_zmienne.csv", "r", encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if row["nazwa-zmienna"] == nazwa:
+                return row["id-zmienna"]
     
 
 if __name__ == "__main__":
